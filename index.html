@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To do's List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+         
+        <!-- Fontawesome cdn -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+        <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
+        <style>
+
+            body{
+                /* background: linear-gradient(#f85032,#e73827) no-repeat; */
+                background-color: #777;
+                height: 100vh;
+                font-family: 'Lato', sans-serif;
+            }
+
+            .milind{
+                width: 80vw;
+                margin: auto;
+            }
+            form{
+                font-family: sans-serif;
+                font-size: 1.2em;
+                font-weight: 700;
+            }
+
+            form .form-group input, textarea, #description{
+                outline: none;
+                color: #333333;
+                font-weight: bold;
+                box-shadow: 0 10px 20px rgb(32, 29, 29);
+                font-family: 'Lato', sans-serif;
+
+            }
+
+            .btn, .btn2{
+                background-color: #2FD8F4;
+                color: #343A40;
+                font-size: 1em;
+                font-weight: 700;
+                width: 60%;
+                font-family: 'Lato', sans-serif;
+            }
+            
+
+            .btn:hover{
+                color: #fff;
+                box-shadow: 0 10px 20px rgb(39, 47, 53);
+
+            }
+
+            #todo{
+                /* color: white; */
+                color: #ED402B;
+                margin: -8px 0 0 30px;
+                font-size: 1.8em;
+                padding: 10px 10px 1px 10px;
+            }
+
+            .icon{
+                    position:relative;
+                    top: 2px;
+        
+                  right: 20px;
+                  font-size:20px; 
+                  }
+
+                  .choose-color{
+                      display: flex;
+                      justify-content:center;
+                      align-items: center;
+                      position: absolute;
+                      right: 32px;
+                      top: 75px;
+                      height: 36px;
+                      padding: 30px;
+                      
+                     
+                  }
+
+                  .choose-color a{
+                     background-color: rgb(194, 45, 45);
+                      margin: 20px;
+                      text-decoration: none;
+                      color: #343A40;
+                      
+                      border-radius: 20px;
+                      padding: 20px 20px;
+                      margin: 40px 25px 4px -8px;
+                      box-shadow: 0 5px 10px rgb(39, 47, 53);
+
+
+                  }
+
+                  .choose-color a:nth-child(1){
+                      background-color: #F44A2F;
+                  }
+
+                  .choose-color a:nth-child(2){
+                      background-color: rgb(82, 76, 76);
+                  }
+
+
+                  
+
+        </style>
+
+        <script type="text/javascript">
+
+        // Funtion for changing the body color on mouseover starts----------------------------------
+        function red() {
+            document.body.style.backgroundImage = 'linear-gradient(#f85032,#e73827)';
+            
+        }
+
+        function grey() {
+            document.body.style.background = '#777';
+            
+        }
+
+        // Funtion for changing the body color on mouseover ends----------------------------------------
+
+        function getAndUpdate(){
+                console.log("Updating List...");
+                tit = document.getElementById('Title').value;
+                desc = document.getElementById('description').value;
+                if (localStorage.getItem('itemsJson') == null){
+                    itemJsonArray = [];
+                    itemJsonArray.push([tit, desc]);
+                    localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
+                }
+                else{
+                    itemJsonArrayStr = localStorage.getItem('itemsJson')
+                    itemJsonArray = JSON.parse(itemJsonArrayStr);
+                    itemJsonArray.push([tit, desc]);
+                    localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
+                }
+                update();
+            }
+
+            function update(){
+                if (localStorage.getItem('itemsJson')==null){
+                    itemJsonArray = []; 
+                    localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
+                } 
+                else{
+                    itemJsonArrayStr = localStorage.getItem('itemsJson')
+                    itemJsonArray = JSON.parse(itemJsonArrayStr); 
+                }
+
+                // Populate the table------------------------------------------------------------------------------
+                let tableBody = document.getElementById("tableBody");
+                let str = "";
+                itemJsonArray.forEach((element, index) => {
+                    str += `
+
+                    <tr>
+
+                    <th scope="row">${index + 1}</th>
+                   
+                    <td>${element[0]}</td>
+                    
+                    <td>${element[1]}</td> 
+                    
+                    <td><button class="btn btn-sm btn-primary" onclick="deleted(${index})"> Delete </button> </td> 
+                    </tr>` ; 
+                });
+                tableBody.innerHTML = str;
+            }
+
+
+            // For some reason below code not working
+            // add = document.getElementById("add");
+            // add.addEventListener("click", getAndUpdate);
+            //  update();
+
+                      
+                //   Delete funtion starts-------------------------------------------------------------
+             function deleted(itemIndex){
+                console.log("Delete", itemIndex);
+                itemJsonArrayStr = localStorage.getItem('itemsJson');
+                itemJsonArray = JSON.parse(itemJsonArrayStr);
+                // Delete itemIndex element from the array
+                if(confirm("Confirm if you want to delete this note.")){
+                
+                itemJsonArray.splice(itemIndex, 1);
+                localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray));
+                update();
+                }
+
+            }
+               //   Delete funtion ends---------------------------------------------------------------------
+
+
+                //   Clear funtion starts-----------------------------------------------------------------
+            function clearStorage(){
+                if (confirm("Do you areally want to clear?")){
+                console.log('Clearing the storage')
+                localStorage.clear();
+                update();
+                }
+            }
+
+             //   Clear funtion ends-------------------------------------------------------------------------
+
+
+
+
+
+
+        
+//        document.addEventListener("click", function(){
+//         document.body.style.backgroundImage = 'linear-gradient(#f85032,#e73827)';
+// });
+        </script>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <i class="fa fa-list-alt" id="todo" aria-hidden="true"></i>
+
+        <a class="navbar-brand" href="#">To do's list</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+       
+    </nav>
+
+    <div class="choose-color">
+        <a href="#" id="red" onmouseover='red()'></a>
+        <a href="#" id="grey" onmouseover='grey()'></a>
+    </div>
+
+
+    <div class="text-center my-4 milind"><h1>To do's List</h1>
+    
+        <!-- <form > -->
+            <div class="form-group input " style="width: 33%;padding: 20px; margin: 10px auto;">
+              <label for="Title">Title </label>
+              <input type="text" class="form-control" id="Title" >
+            </div>
+            <div class="form-group input" style="width: 63%; margin: auto;">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" rows="3" placeholder="Add a Note."></textarea>
+              </div>       
+        
+        
+        
+
+       <div class="wrapper">
+        
+        <button type="submit" id="add" class="btn " style=" display:block; margin:20px auto;" onclick="getAndUpdate()"><i class="fa fa-bookmark-o icon"  aria-hidden="true"></i>Save</button>
+
+        <button  id="clear" class="btn btn-danger" style="border: none;" onclick="clearStorage()">Clear list</button>
+
+       </div>
+       
+          <!-- </form> -->
+
+          <div id="items" class="my-4">
+            <h2>Your Items</h2>
+    
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Sno</th>
+                    <th scope="col">Item title</th>
+                    <th scope="col">Item Description</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="tableBody">
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>Get some coffee</td>
+                    <td>You need coffee as you are a coder</td>
+                    <td><button class="btn btn-danger" style="border: none;">Delete</button></td>
+                  </tr>
+                
+                  </tr>
+                </tbody>
+              </table>
+    
+    
+        </div>
+    
+    
+    </div>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- First Todo list tried -->
+    <!-- <div class="container my-3">
+        <h1>Welcome to Magic notes.</h1>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Add a Note.</h5>
+                <div class="form-group">
+                    <textarea class="form-control" id="addTxt" rows="3"></textarea>
+                </div> <button class="btn btn-success" id="addBtn">Save</button>
+            </div>
+        </div>
+        <h2 class=my-4>Your Notes:</h2>
+        <hr>
+
+        <div id="notes" class="row container-fluid">
+
+            <div class="my-2 mx-2" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">Notes.</p>
+                    <button class="btn btn-danger">Delete Note.</button>
+                </div>
+            </div> -->
+    
+    <!-- </div> -->
+
+
+
+
+
+
+
+
+    <!-- bootstrap scripts -->
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+    <script src="JS/app.js"></script>
+</body>
+
+</html>
